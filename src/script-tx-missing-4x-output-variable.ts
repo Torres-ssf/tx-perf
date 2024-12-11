@@ -2,6 +2,7 @@ import { Provider, Wallet } from "fuels";
 import "dotenv/config";
 import { measure } from "./helpers";
 import { ContractTransfer, TransferParamsInput } from "../sway-programs/contracts/ContractTransfer";
+import { Vec } from "../sway-programs/contracts/common";
 
 
 async function main() {
@@ -18,14 +19,12 @@ async function main() {
     const baseAssetId = provider.getBaseAssetId()
     const amount = 100
 
-    const param: TransferParamsInput = {
+    // 4 transfer params, requiring 4 `OutputVariable`
+    const params: Vec<TransferParamsInput> = new Array(4).fill({
       recipient: { Address: { bits: account.address.toB256() } },
       asset_id: { bits: baseAssetId },
       amount,
-    }
-
-    // 4 transfer params, requiring 4 `OutputVariable`
-    const params = new Array(4).fill(param)
+    })
 
     const call = await contract.functions
       .execute_transfer(params)
