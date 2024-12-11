@@ -8,12 +8,12 @@ The situation is even worse with `Predicates` and missing `OutputVariables`—th
 
 Here are some stats about the number of requests each example requires:
 
-| Transaction Type | Required HTTP Requests | Duration
-|--|--|--|
-| `ScriptTransaction` | 4+ | 2.262s |
-| `ScriptTransaction` + `Predicate(s)` | 5+ | 2.473s |
-| `ScriptTransaction` + 1x missing `OutputVariables` | 5+ | 2.467s |
-| `ScriptTransaction` + 4x missing `OutputVariables` | 8+ | 3.854s |
+| Transaction Type | Required HTTP Requests | Time (Wifi) | Time (4G)
+|--|--|--|--|
+| `ScriptTransaction` | 4+ | 2.262s | 2.622s |
+| `ScriptTransaction` + `Predicate(s)` | 5+ | 2.473s | 2.816s |
+| `ScriptTransaction` + 1x missing `OutputVariables` | 5+ | 2.467s | 2.989s |
+| `ScriptTransaction` + 4x missing `OutputVariables` | 8+ | 3.854s | 4.193s |
 
 ## Challenges
 
