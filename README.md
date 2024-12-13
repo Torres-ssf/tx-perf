@@ -359,7 +359,7 @@ The first user interaction will forever be lagging and glitchy until we can unif
 
 The ideal candidate is the `dry run` since nothing can be done without it.
 
-At this stage, the unified solution could be reduced to two requests only:
+At this stage, the solution can be simplified to three requests initially (reduced to two once chain information is cached), regardless of the complexity of the case:
 
 1.  Submits a dry run
     - Parses `fuel-core` response containing all validation issues and solutions
@@ -389,9 +389,20 @@ theme: dark
 
 flowchart TB
   Start(Start) --> First(1st req.)
-  First <-.-> DryRun{DryRun on Steroids}
   First --> Second(2nd req.)
-  Second --> Submit{Submit}
+  Second --> Third(3th req.)
+
+  First --> HasConsensus(((Has Cache?)))
+  HasConsensus --> Yep[[Yep]]
+  HasConsensus --> Nope[[Nope]]
+  Nope --> GetChainConfig{GetChainConfig}
+  Yep -->First
+
+  GetChainConfig -->SaveCache(((SaveCache!)))
+  SaveCache --> First
+
+  Second <-.-> DryRun{DryRun on Steroids}
+  Third --> Submit{Submit}
   Submit --> End(End)
 
 classDef default stroke:#000;
