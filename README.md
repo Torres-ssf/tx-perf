@@ -46,7 +46,8 @@ HTTP Requests:
       - `max_fee`
 3.  The third performs a `dryRun`
     - Set a gas limit as [the received] gas used
-4.  The fourth submits the final transaction
+4.  The fourth executes the query `coinsToSpend` to fund the transaction
+5.  The fifth submits the final transaction
 
 ```mermaid
 ---
@@ -137,9 +138,9 @@ To ensure the transaction remains within the chain's gas limits while providing 
 
 When a transaction includes predicates, additional complexity arises: each predicate input requires its `predicateGasUsed` property to be set before its submission and _also_ before its dry run.
 
-Because of this, a 5th request is necessary to fetch this value for all predicate inputs.
+Because of this, another request is necessary to fetch this value for all predicate inputs.
 
-The final transaction will contain 4x requests plus one extra request for predicates.
+The final transaction will contain 5x requests plus one extra request for predicates.
 
 ```mermaid
 ---
