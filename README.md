@@ -371,7 +371,7 @@ The first user interaction will forever be lagging and glitchy until we can unif
 
 The ideal candidate is the `dry run` since nothing can be done without it.
 
-At this stage, the solution can be simplified to three requests initially (reduced to two once chain information is cached), regardless of the complexity of the case:
+At this stage, the solution can be simplified to four requests initially (reduced to three once chain information is cached), regardless of the complexity of the case:
 
 1.  Submits a dry run
     - Parses `fuel-core` response containing all validation issues and solutions
