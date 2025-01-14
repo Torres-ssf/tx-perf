@@ -2,7 +2,7 @@
 
 These investigations try to illuminate some of our primary DevEx issues around transaction flow and estimation. The more requests we need to process, the more roundtrips we have, and the slower the overall perceived time for the end user using the front end of a Fuel dApp.
 
-The situation is even worse with `Predicates` and missing `OutputVariables`—the latter exponentially increase the number of HTTP requests. Nevertheless, even our most common and straightforward transaction type requires 4x HTTP requests.
+The situation is even worse with `Predicates` and missing `OutputVariables`—the latter exponentially increase the number of HTTP requests. Nevertheless, even our most common and straightforward transaction type requires 5x HTTP requests.
 
 ## Example Stats
 
@@ -10,10 +10,10 @@ Here are some stats about the number of requests each example requires:
 
 | Transaction Type | Required HTTP Requests | Time (Wifi) | Time (4G)
 |--|--|--|--|
-| `ScriptTransaction` | 4+ | 2.262s | 2.622s |
-| `ScriptTransaction` + `Predicate(s)` | 5+ | 2.473s | 2.816s |
-| `ScriptTransaction` + 1x missing `OutputVariables` | 5+ | 2.467s | 2.989s |
-| `ScriptTransaction` + 4x missing `OutputVariables` | 8+ | 3.854s | 4.193s |
+| `ScriptTransaction` | 5+ | 2.262s | 2.622s |
+| `ScriptTransaction` + `Predicate(s)` | 6+ | 2.473s | 2.816s |
+| `ScriptTransaction` + 1x missing `OutputVariables` | 6+ | 2.467s | 2.989s |
+| `ScriptTransaction` + 4x missing `OutputVariables` | 9+ | 3.854s | 4.193s |
 
 ## Challenges
 
@@ -65,6 +65,7 @@ flowchart TB
   First --> |min_gas = X, max_gas = Y| Second(2nd req.)
   Second --> |min_fee = Y, max_fee = Z| Third(3th req.)
   Third --> |gas_limit = gas_used| Forth(4th req.)
+  Forth --> |fund TX| Fifth(5th req.)
 
   First --> HasConsensus(((Has Cache?)))
   HasConsensus --> Yep[[Yep]]
@@ -77,7 +78,8 @@ flowchart TB
 
   Second <--> |read:price| EstimateGasPrice{EstimateGasPrice}
   Third <--> |read:gas_used| DryRun{DryRun}
-  Forth --> Submit{Submit}
+  Forth <--> CoinsToSpend{CoinsToSpend}
+  Fifth --> Submit{Submit}
   Submit --> End(End)
 
 
@@ -93,6 +95,7 @@ class End StartEnd;
 class GetChainConfig GqlRequest;
 class EstimateGasPrice GqlRequest;
 class DryRun GqlRequest;
+class CoinsToSpend GqlRequest;
 class Submit GqlRequest;
 class EstimatePredicate GqlRequest;
 
@@ -156,6 +159,7 @@ flowchart TB
   Second --> Third(3rd req.)
   Third --> Forth(4th req.)
   Forth --> Fifth(5th req.)
+  Fifth --> Sixth(6th req.)
 
   First --> HasConsensus(((Has Cache?)))
   HasConsensus --> Yep[[Yep]]
@@ -169,7 +173,8 @@ flowchart TB
   Second <--> EstimateGasPrice{EstimateGasPrice}
   Third <-.-> |read:predicateGasUsed| EstimatePredicates{EstimatePredicates}
   Forth <--> |set:predicateGasUsed|DryRun{DryRun}
-  Fifth --> Submit{Submit}
+  Fifth <--> CoinsToSpend{CoinsToSpend}
+  Sixth --> Submit{Submit}
   Submit --> End(End)
 
 
@@ -186,6 +191,7 @@ class End StartEnd;
 class GetChainConfig GqlRequest;
 class EstimateGasPrice GqlRequest;
 class DryRun GqlRequest;
+class CoinsToSpend GqlRequest;
 class Submit GqlRequest;
 class EstimatePredicates GqlRequest;
 
@@ -197,6 +203,7 @@ class Second Steps
 class Third Steps
 class Forth Steps
 class Fifth Steps
+class Sixth Steps
 
 style Yep stroke:#2a9d8f, color:#2a9d8f, fill:none;
 style Nope stroke:#e5383b, color:#e5383b, fill:none;
@@ -256,6 +263,7 @@ flowchart TB
   Forth --> Fifth(5th req.)
   Fifth --> Sixth(6th req.)
   Sixth --> Seventh(7th req.)
+  Seventh --> Eighth(8th req.)
 
   First --> HasConsensus(((Has Cache?)))
   HasConsensus --> Yep[[Yep]]
@@ -275,7 +283,8 @@ flowchart TB
   DryRun2 --> |Missing Contract| AddContract[Add InputContract and OutputContract]
   AddContract --> Fifth
   Sixth <--> |Success| DryRun3{DryRun<3>}
-  Seventh --> Submit{Submit}
+  Seventh <--> CoinsToSpend{CoinsToSpend}
+  Eighth --> Submit{Submit}
   Submit --> End(End)
 
 
@@ -294,6 +303,7 @@ class EstimateGasPrice GqlRequest;
 class DryRun1 GqlRequest;
 class DryRun2 GqlRequest;
 class DryRun3 GqlRequest;
+class CoinsToSpend GqlRequest;
 class Submit GqlRequest;
 class EstimatePredicates GqlRequest;
 
@@ -307,6 +317,7 @@ class Forth Steps
 class Fifth Steps
 class Sixth Steps
 class Seventh Steps
+class Eighth Steps
 
 style Yep stroke:#2a9d8f, color:#2a9d8f, fill:none;
 style Nope stroke:#e5383b, color:#e5383b, fill:none;
@@ -391,6 +402,7 @@ flowchart TB
   Start(Start) --> First(1st req.)
   First --> Second(2nd req.)
   Second --> Third(3th req.)
+  Third --> Forth(4th req.)
 
   First --> HasConsensus(((Has Cache?)))
   HasConsensus --> Yep[[Yep]]
@@ -402,7 +414,8 @@ flowchart TB
   SaveCache --> First
 
   Second <-.-> DryRun{DryRun on Steroids}
-  Third --> Submit{Submit}
+  Third <--> CoinsToSpend{CoinsToSpend}
+  Forth --> Submit{Submit}
   Submit --> End(End)
 
 classDef default stroke:#000;
@@ -418,6 +431,7 @@ class End StartEnd;
 class GetChainConfig GqlRequest;
 class EstimateGasPrice GqlRequest;
 class DryRun GqlRequest;
+class CoinsToSpend GqlRequest;
 class Submit GqlRequest;
 class EstimatePredicate GqlRequest;
 
@@ -428,7 +442,6 @@ class First Steps
 class Second Steps
 class Third Steps
 class Forth Steps
-class Fifth Steps
 
 style DryRun stroke:yellow, stroke-width: 5px, stroke-dasharray:15 15;
 ```
