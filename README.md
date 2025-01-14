@@ -64,8 +64,8 @@ flowchart TB
   Start(Start) --> First(1st req.)
   First --> |min_gas = X, max_gas = Y| Second(2nd req.)
   Second --> |min_fee = Y, max_fee = Z| Third(3th req.)
-  Third --> |gas_limit = gas_used| Forth(4th req.)
-  Forth --> |fund TX| Fifth(5th req.)
+  Third --> |gas_limit = gas_used| Fourth(4th req.)
+  Fourth --> |fund TX| Fifth(5th req.)
 
   First --> HasConsensus(((Has Cache?)))
   HasConsensus --> Yep[[Yep]]
@@ -78,7 +78,7 @@ flowchart TB
 
   Second <--> |read:price| EstimateGasPrice{EstimateGasPrice}
   Third <--> |read:gas_used| DryRun{DryRun}
-  Forth <--> CoinsToSpend{CoinsToSpend}
+  Fourth <--> CoinsToSpend{CoinsToSpend}
   Fifth --> Submit{Submit}
   Submit --> End(End)
 
@@ -105,7 +105,7 @@ class SaveCache Action;
 class First Steps
 class Second Steps
 class Third Steps
-class Forth Steps
+class Fourth Steps
 class Fifth Steps
 
 style Yep stroke:#2a9d8f, color:#2a9d8f, fill:none;
@@ -157,8 +157,8 @@ flowchart TB
   Start(Start) --> First(1st req.)
   First --> Second(2nd req.)
   Second --> Third(3rd req.)
-  Third --> Forth(4th req.)
-  Forth --> Fifth(5th req.)
+  Third --> Fourth(4th req.)
+  Fourth --> Fifth(5th req.)
   Fifth --> Sixth(6th req.)
 
   First --> HasConsensus(((Has Cache?)))
@@ -172,7 +172,7 @@ flowchart TB
 
   Second <--> EstimateGasPrice{EstimateGasPrice}
   Third <-.-> |read:predicateGasUsed| EstimatePredicates{EstimatePredicates}
-  Forth <--> |set:predicateGasUsed|DryRun{DryRun}
+  Fourth <--> |set:predicateGasUsed|DryRun{DryRun}
   Fifth <--> CoinsToSpend{CoinsToSpend}
   Sixth --> Submit{Submit}
   Submit --> End(End)
@@ -201,7 +201,7 @@ class SaveCache Action;
 class First Steps
 class Second Steps
 class Third Steps
-class Forth Steps
+class Fourth Steps
 class Fifth Steps
 class Sixth Steps
 
@@ -259,8 +259,8 @@ flowchart TB
   Start(Start) --> First(1st req.)
   First --> Second(2nd req.)
   Second --> Third(3rd req.)
-  Third --> Forth(4th req.)
-  Forth --> Fifth(5th req.)
+  Third --> Fourth(4th req.)
+  Fourth --> Fifth(5th req.)
   Fifth --> Sixth(6th req.)
   Sixth --> Seventh(7th req.)
   Seventh --> Eighth(8th req.)
@@ -276,9 +276,9 @@ flowchart TB
 
   Second <--> EstimateGasPrice{EstimateGasPrice}
   Third <--> EstimatePredicates{EstimatePredicates}
-  Forth --> DryRun1{DryRun<1>}
+  Fourth --> DryRun1{DryRun<1>}
   DryRun1 --> |Missing OutputVariable| AddOutputVariable[Add OutputVariable]
-  AddOutputVariable --> Forth
+  AddOutputVariable --> Fourth
   Fifth --> DryRun2{DryRun<2>}
   DryRun2 --> |Missing Contract| AddContract[Add InputContract and OutputContract]
   AddContract --> Fifth
@@ -313,7 +313,7 @@ class SaveCache Action;
 class First Steps
 class Second Steps
 class Third Steps
-class Forth Steps
+class Fourth Steps
 class Fifth Steps
 class Sixth Steps
 class Seventh Steps
@@ -402,7 +402,7 @@ flowchart TB
   Start(Start) --> First(1st req.)
   First --> Second(2nd req.)
   Second --> Third(3th req.)
-  Third --> Forth(4th req.)
+  Third --> Fourth(4th req.)
 
   First --> HasConsensus(((Has Cache?)))
   HasConsensus --> Yep[[Yep]]
@@ -415,7 +415,7 @@ flowchart TB
 
   Second <-.-> DryRun{DryRun on Steroids}
   Third <--> CoinsToSpend{CoinsToSpend}
-  Forth --> Submit{Submit}
+  Fourth --> Submit{Submit}
   Submit --> End(End)
 
 classDef default stroke:#000;
@@ -441,7 +441,7 @@ class SaveCache Action;
 class First Steps
 class Second Steps
 class Third Steps
-class Forth Steps
+class Fourth Steps
 
 style DryRun stroke:yellow, stroke-width: 5px, stroke-dasharray:15 15;
 ```
